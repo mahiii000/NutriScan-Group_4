@@ -1,0 +1,74 @@
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgba(252, 251, 246, 0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid #dfe6dc;
+}
+
+.navbar__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1248px;
+  margin: 0 auto;
+  padding: 0.9rem 24px;
+  box-sizing: border-box;
+}
+
+.navbar__logo {
+  font-family: "Merriweather", Georgia, serif;
+  font-size: clamp(1.75rem, 4vw, 2.4rem);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  color: #1f4a35;
+  text-decoration: none;
+}
+
+.navbar__dot {
+  color: #6aa57f;
+}
+
+.navbar__links {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.navbar__link {
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  font-family: "DM Sans", system-ui, sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #3d6350;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+}
+
+.navbar__link:hover {
+  background: #f0f5ec;
+}
+
+.navbar__link--active,
+.navbar__link--active:hover {
+  background: #1f4a35;
+  color: #fff;
+}
+
+.navbar__logo:focus-visible,
+.navbar__link:focus-visible {
+  outline: 2px solid #6aa57f;
+  outline-offset: 2px;
+}
+
+@media (max-width: 420px) {
+  .navbar__link {
+    padding: 0.4rem 0.75rem;
+  }
+
+  .navbar__inner {
+  padding-left: 14px;
+  padding-right: 14px;
+  }
+}

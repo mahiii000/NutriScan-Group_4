@@ -5,11 +5,20 @@ const products = [
     brands: "Example Brand",
     nutriscore_grade: "a",
     nutriments: {
+      "energy-kcal_100g": 380,
       sugars_100g: 4.5,
+      fat_100g: 6,
+      "saturated-fat_100g": 1.2,
+      proteins_100g: 10,
+      fiber_100g: 9,
+      salt_100g: 0.4,
     },
-    image_front_url: "",
+    image_front_url: "/images/oat-cereal.jpg",
     categories: "Breakfast cereals",
     labels_tags: [],
+    allergens_tags: ["en:gluten", "en:milk"],
+    ingredients_text:
+      "Whole grain oats (62%), sugar, wheat flour, honey, milk powder, salt, natural flavour.",
   },
   {
     code: "sample-2",
@@ -17,11 +26,20 @@ const products = [
     brands: "Example Foods",
     nutriscore_grade: "e",
     nutriments: {
+      "energy-kcal_100g": 540,
       sugars_100g: 35,
+      fat_100g: 31,
+      "saturated-fat_100g": 18,
+      proteins_100g: 6,
+      fiber_100g: 2.5,
+      salt_100g: 0.2,
     },
-    image_front_url: "",
+    image_front_url: "/images/chocolate-bar.jpg",
     categories: "Chocolate snacks",
     labels_tags: [],
+    allergens_tags: ["en:milk", "en:nuts", "en:soybeans"],
+    ingredients_text:
+      "Sugar, cocoa butter, whole milk powder, cocoa mass, hazelnuts, emulsifier (soy lecithin), vanilla.",
   },
   {
     code: "sample-3",
@@ -29,11 +47,18 @@ const products = [
     brands: "Daily Foods",
     nutriscore_grade: "b",
     nutriments: {
+      "energy-kcal_100g": 410,
       sugars_100g: 2,
+      fat_100g: 12,
+      "saturated-fat_100g": 1.1,
+      proteins_100g: 7,
+      salt_100g: 1.1,
     },
-    image_front_url: "",
+    image_front_url: "/images/corn-crackers.jpg",
     categories: "Crackers",
     labels_tags: ["en:gluten-free"],
+    allergens_tags: [],
+    ingredients_text: "Corn flour, sunflower oil, sea salt.",
   },
 ];
 

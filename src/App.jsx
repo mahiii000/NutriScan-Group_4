@@ -1,24 +1,28 @@
 import { Routes, Route, Link } from "react-router-dom";
+import Navbar from "./components/Navbar";
 import SearchPage from "./pages/SearchPage";
 import ProductDetail from "./pages/ProductDetail";
 import Compare from "./pages/Compare";
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<SearchPage />} />
-      <Route path="/product/:id" element={<ProductDetail />} />
-      <Route path="/compare" element={<Compare />} />
-      <Route
-        path="*"
-        element={
-          <main>
-            <h1>Page not found</h1>
-            <Link to="/">Back to home</Link>
-          </main>
-        }
-      />
-    </Routes>
+    <>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<SearchPage />} />
+        <Route path="/product/:id" element={<ProductDetail />} />
+        <Route path="/compare" element={<Compare />} />
+        <Route
+          path="*"
+          element={
+            <main>
+              <h1>Page not found</h1>
+              <Link to="/">Back to home</Link>
+            </main>
+          }
+        />
+      </Routes>
+    </>
   );
 }
 

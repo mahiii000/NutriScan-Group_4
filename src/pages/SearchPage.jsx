@@ -75,7 +75,6 @@ function SearchPage() {
   return (
     <main className="search-page">
       <section className="search-header">
-        <h1 className="brand-title">NutriScan<span>.</span></h1>
         <p className="subtitle">
           Explore products and compare what's inside.
         </p>

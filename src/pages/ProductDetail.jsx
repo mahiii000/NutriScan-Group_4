@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import sampleProducts from "../data/sampleProducts";
+import products from "../data/products";
 import NutriScoreBadge from "../components/NutriScoreBadge";
 import AllergenBanner from "../components/AllergenBanner";
 import NutritionTable from "../components/NutritionTable";
@@ -8,10 +8,10 @@ import "./ProductDetail.css";
 
 function ProductDetail() {
   const { id } = useParams();
-  // Pinning is local for now. Ayesha's Context will replace this later.
+  // Pinning is local for now
   const [isPinned, setIsPinned] = useState(false);
 
-  const product = sampleProducts.find((p) => p.code === id);
+  const product = products.find((p) => p.code === id);
 
   if (!product) {
     return (
@@ -34,10 +34,10 @@ function ProductDetail() {
 
         <section className="pd-hero">
           <div className="pd-card pd-image-card">
-            {product.image_url ? (
+            {product.image_front_url ? (
               <img
                 className="pd-image"
-                src={product.image_url}
+                src={product.image_front_url}
                 alt={product.product_name}
               />
             ) : (
