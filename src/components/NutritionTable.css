@@ -1,0 +1,37 @@
+.nutrition-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.nutrition-table__caption {
+  text-align: left;
+  margin-bottom: 0.5rem;
+  font-size: 0.75rem;
+  color: #7a867d;
+}
+
+.nutrition-table__row {
+  border-top: 1px solid #e6ebe3;
+}
+
+.nutrition-table__row:first-child {
+  border-top: none;
+}
+
+.nutrition-table__label,
+.nutrition-table__value {
+  padding: 0.7rem 0;
+}
+
+.nutrition-table__label {
+  text-align: left;
+  font-weight: 500;
+  color: #2f3d34;
+}
+
+.nutrition-table__value {
+  text-align: right;
+  font-weight: 700;
+  color: #1f4a35;
+}

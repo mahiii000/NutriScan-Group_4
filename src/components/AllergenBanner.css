@@ -1,0 +1,56 @@
+.allergen-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  padding: 1rem 1.25rem;
+  border-radius: 14px;
+  font-size: 0.9rem;
+}
+
+.allergen-banner--warning {
+  background: #fdf1ee;
+  border: 1px solid #f0c9c2;
+  color: #8a3a2e;
+}
+
+.allergen-banner--clear {
+  background: #f0f5ec;
+  border: 1px solid #dbe6d6;
+  color: #3d6350;
+}
+
+.allergen-banner__icon {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: #8a3a2e;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.allergen-banner__title {
+  margin: 0 0 0.4rem;
+  font-weight: 700;
+}
+
+.allergen-banner__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.allergen-banner__item {
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid #f0c9c2;
+  font-size: 0.8rem;
+}

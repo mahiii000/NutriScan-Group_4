@@ -1,0 +1,181 @@
+/* ---------- Page layout ---------- */
+.pd-page {
+  --pd-bg: #fcfbf6;
+  --pd-card: #ffffff;
+  --pd-border: #dfe6dc;
+  --pd-green: #1f4a35;
+  --pd-green-soft: #f0f5ec;
+  --pd-text: #2f3d34;
+  --pd-muted: #7a867d;
+
+  min-height: 100vh;
+  background: var(--pd-bg);
+  color: var(--pd-text);
+  font-family: "DM Sans", system-ui, sans-serif;
+  padding: 2rem 1rem 4rem;
+}
+
+.pd-container {
+  max-width: 850px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* ---------- Shared bits ---------- */
+.pd-card {
+  background: var(--pd-card);
+  border: 1px solid var(--pd-border);
+  border-radius: 16px;
+  box-shadow: 0 1px 4px rgba(31, 74, 53, 0.05);
+}
+
+.pd-muted {
+  color: var(--pd-muted);
+  font-size: 0.85rem;
+}
+
+.pd-back {
+  align-self: flex-start;
+  padding: 0.45rem 1rem;
+  border: 1px solid var(--pd-border);
+  border-radius: 999px;
+  background: var(--pd-card);
+  color: var(--pd-green);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.pd-back:hover {
+  background: var(--pd-green-soft);
+}
+
+/* ---------- Hero (image + summary) ---------- */
+.pd-hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.pd-image-card {
+  padding: 0.9rem;
+}
+
+.pd-image,
+.pd-image-placeholder {
+  width: 100%;
+  height: 260px;
+  border-radius: 12px;
+}
+
+.pd-image {
+  object-fit: contain;
+  background: var(--pd-card);
+}
+
+.pd-image-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--pd-green-soft);
+  font-size: 0.9rem;
+}
+
+.pd-summary {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1.5rem;
+}
+
+.pd-brand {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.pd-title {
+  margin: 0;
+  font-family: "Merriweather", Georgia, serif;
+  font-size: 1.75rem;
+  line-height: 1.25;
+  color: var(--pd-green);
+}
+
+.pd-score {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+/* ---------- Pin button ---------- */
+.pd-pin-btn {
+  align-self: flex-start;
+  margin-top: 0.5rem;
+  padding: 0.65rem 1.4rem;
+  border: 1px solid var(--pd-green);
+  border-radius: 999px;
+  background: var(--pd-green);
+  color: #fff;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.pd-pin-btn:hover {
+  opacity: 0.9;
+}
+
+.pd-pin-btn--active {
+  background: var(--pd-green-soft);
+  color: var(--pd-green);
+}
+
+/* ---------- Content sections ---------- */
+.pd-section {
+  padding: 1.5rem;
+}
+
+.pd-section-title {
+  margin: 0 0 0.9rem;
+  font-family: "Merriweather", Georgia, serif;
+  font-size: 1.15rem;
+  color: var(--pd-green);
+}
+
+.pd-ingredients {
+  margin: 0;
+  line-height: 1.65;
+  font-size: 0.95rem;
+}
+
+/* ---------- Not found ---------- */
+.pd-notfound {
+  padding: 2rem;
+  text-align: center;
+}
+
+.pd-notfound__title {
+  margin: 0 0 0.5rem;
+  font-family: "Merriweather", Georgia, serif;
+  color: var(--pd-green);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 640px) {
+  .pd-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .pd-title {
+    font-size: 1.4rem;
+  }
+
+  .pd-image,
+  .pd-image-placeholder {
+    height: 200px;
+  }
+}

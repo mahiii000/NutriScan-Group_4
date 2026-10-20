@@ -1,0 +1,27 @@
+.nsb {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  font-weight: 700;
+  color: #1f4a35;
+}
+
+.nsb--md {
+  width: 2rem;
+  height: 2rem;
+  font-size: 0.95rem;
+}
+
+.nsb--lg {
+  width: 2.75rem;
+  height: 2.75rem;
+  font-size: 1.25rem;
+}
+
+.nsb--a { background: #c8e6c0; }
+.nsb--b { background: #e0efb8; }
+.nsb--c { background: #fbf0b0; }
+.nsb--d { background: #fbd9a8; }
+.nsb--e { background: #f6c6c3; }
+.nsb--unknown { background: #e8ece6; color: #6b7a70; }
