@@ -1,12 +1,12 @@
 import { Routes, Route, Link } from "react-router-dom";
-import Home from "./pages/Home";
+import SearchPage from "./pages/SearchPage";
 import ProductDetail from "./pages/ProductDetail";
 import Compare from "./pages/Compare";
 
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
+      <Route path="/" element={<SearchPage />} />
       <Route path="/product/:id" element={<ProductDetail />} />
       <Route path="/compare" element={<Compare />} />
       <Route
