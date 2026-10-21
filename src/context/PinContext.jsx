@@ -3,40 +3,42 @@ import products from "../data/products";
 
 const STORAGE_KEY_PINNED = "nutriscan_pinned_products";
 const STORAGE_KEY_COMPARED = "nutriscan_compared_slots";
-const DEFAULT_PINNED = ["sample-4", "sample-5"]; // Oat Bar & Choco Bar matching the sketch
+const DEFAULT_PINNED = []; // Oat Bar & Choco Bar matching the sketch
 
 const PinContext = createContext(null);
 
 export function PinProvider({ children }) {
   const [pinnedCodes, setPinnedCodes] = useState(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY_PINNED);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed;
-        }
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY_PINNED);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed)) {
+        return parsed;
       }
-    } catch {
-      // ignore JSON parse error
     }
-    return DEFAULT_PINNED;
-  });
+  } catch {
+    // Ignore JSON parse errors
+  }
+
+  return [];
+});
 
   const [comparedCodes, setComparedCodes] = useState(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY_COMPARED);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length === 2) {
-          return parsed;
-        }
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY_COMPARED);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed) && parsed.length === 2) {
+        return parsed;
       }
-    } catch {
-      // ignore JSON parse error
     }
-    return [DEFAULT_PINNED[0] || "sample-4", DEFAULT_PINNED[1] || "sample-5"];
-  });
+  } catch {
+    // Ignore JSON parse errors
+  }
+
+  return [null, null];
+});
 
   // Sync to localStorage
   useEffect(() => {
@@ -85,19 +87,30 @@ export function PinProvider({ children }) {
   }
 
   function pinProduct(code) {
-    if (!code) return;
-    setPinnedCodes((prev) => {
-      if (prev.includes(code)) return prev;
-      return [...prev, code];
-    });
+  if (!code) return;
 
-    // If compared slots has an empty slot or invalid code, fill it
-    setComparedCodes((prev) => {
-      if (!prev[0]) return [code, prev[1]];
-      if (!prev[1] && prev[0] !== code) return [prev[0], code];
-      return prev;
-    });
-  }
+  setPinnedCodes((prev) => {
+    // Don't add the same product twice
+    if (prev.includes(code)) return prev;
+
+    // Maximum of 2 pinned products
+    if (prev.length >= 2) return prev;
+
+    return [...prev, code];
+  });
+
+  // Add the product to an empty comparison slot
+  setComparedCodes((prev) => {
+    if (prev.includes(code)) return prev;
+
+    if (!prev[0]) return [code, prev[1]];
+    if (!prev[1]) return [prev[0], code];
+
+    return prev;
+  });
+}
+
+  
 
   function unpinProduct(code) {
     if (!code) return;
@@ -132,20 +145,18 @@ export function PinProvider({ children }) {
   /**
    * Swap a single slot (0 or 1) with another product without restarting
    */
-  function swapComparedSlot(slotIndex, newCode) {
-    if (!newCode || (slotIndex !== 0 && slotIndex !== 1)) return;
+ function swapComparedSlot(slotIndex, newCode) {
+  if (!newCode || (slotIndex !== 0 && slotIndex !== 1)) return;
 
-    // Ensure the new product is also pinned
-    if (!pinnedCodes.includes(newCode)) {
-      setPinnedCodes((prev) => [...prev, newCode]);
-    }
+  // Only allow products that are already pinned
+  if (!pinnedCodes.includes(newCode)) return;
 
-    setComparedCodes((prev) => {
-      const next = [...prev];
-      next[slotIndex] = newCode;
-      return next;
-    });
-  }
+  setComparedCodes((prev) => {
+    const next = [...prev];
+    next[slotIndex] = newCode;
+    return next;
+  });
+}
 
   // Map codes to full product objects
   const pinnedProducts = pinnedCodes

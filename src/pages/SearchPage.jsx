@@ -120,7 +120,7 @@ function SearchPage() {
 
         <div className="compare-tray">
           {[0, 1].map((slot) => {
-            const product = comparedProducts[slot] || pinnedProducts[slot];
+            const product = pinnedProducts[slot];
 
             if (!product) {
               return (
