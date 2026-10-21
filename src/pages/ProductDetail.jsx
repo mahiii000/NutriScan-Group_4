@@ -1,15 +1,14 @@
-import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import products from "../data/products";
 import NutriScoreBadge from "../components/NutriScoreBadge";
 import AllergenBanner from "../components/AllergenBanner";
 import NutritionTable from "../components/NutritionTable";
+import { usePin } from "../context/PinContext";
 import "./ProductDetail.css";
 
 function ProductDetail() {
   const { id } = useParams();
-  // Pinning is local for now
-  const [isPinned, setIsPinned] = useState(false);
+  const { isPinned, togglePin } = usePin();
 
   const product = products.find((p) => p.code === id);
 
@@ -56,11 +55,11 @@ function ProductDetail() {
 
             <button
               type="button"
-              className={`pd-pin-btn ${isPinned ? "pd-pin-btn--active" : ""}`}
-              onClick={() => setIsPinned((prev) => !prev)}
-              aria-pressed={isPinned}
+              className={`pd-pin-btn ${isPinned(product.code) ? "pd-pin-btn--active" : ""}`}
+              onClick={() => togglePin(product.code)}
+              aria-pressed={isPinned(product.code)}
             >
-              {isPinned ? "Pinned ✓" : "+ Pin for comparison"}
+              {isPinned(product.code) ? "Pinned ✓" : "+ Pin for comparison"}
             </button>
           </div>
         </section>

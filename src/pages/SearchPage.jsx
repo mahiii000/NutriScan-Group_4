@@ -1,38 +1,14 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import products from "../data/products";
 import ProductCard from "../components/ProductCard";
+import { usePin } from "../context/PinContext";
 import "./SearchPage.css";
 
 function SearchPage() {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("All");
-  const [pinned, setPinned] = useState([]);
-
-  function togglePin(productCode) {
-    setPinned((currentPinned) => {
-      const alreadyPinned = currentPinned.some(
-        (product) => product.code === productCode
-      );
-
-      if (alreadyPinned) {
-        return currentPinned.filter(
-          (product) => product.code !== productCode
-        );
-      }
-
-      if (currentPinned.length >= 2) {
-        return currentPinned;
-      }
-
-      const product = products.find(
-        (item) => item.code === productCode
-      );
-
-      return product
-        ? [...currentPinned, product]
-        : currentPinned;
-    });
-  }
+  const { pinnedProducts, isPinned, togglePin, comparedProducts } = usePin();
 
   const filteredProducts = products.filter((product) => {
     const name = product.product_name || "";
@@ -115,9 +91,7 @@ function SearchPage() {
             <ProductCard
               key={product.code}
               product={product}
-              isPinned={pinned.some(
-                (item) => item.code === product.code
-              )}
+              isPinned={isPinned(product.code)}
               onTogglePin={togglePin}
             />
           ))}
@@ -140,13 +114,13 @@ function SearchPage() {
           </div>
 
           <span className="selection-count">
-            {pinned.length} / 2 selected
+            {pinnedProducts.length} pinned
           </span>
         </div>
 
         <div className="compare-tray">
           {[0, 1].map((slot) => {
-            const product = pinned[slot];
+            const product = comparedProducts[slot] || pinnedProducts[slot];
 
             if (!product) {
               return (
@@ -154,7 +128,7 @@ function SearchPage() {
                   <span className="empty-plus">+</span>
                   <div>
                     <p className="empty-title">
-                      {slot === 0 && pinned.length === 0
+                      {slot === 0 && pinnedProducts.length === 0
                         ? "Choose your first product"
                         : "Add another product"}
                     </p>
@@ -246,10 +220,19 @@ function SearchPage() {
           })}
         </div>
 
-        {pinned.length === 2 && (
-          <p className="comparison-ready">
-            Both products selected. Compare their nutritional values above.
-          </p>
+        {comparedProducts.filter(Boolean).length === 2 && (
+          <div style={{ marginTop: '18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
+            <p className="comparison-ready" style={{ margin: 0 }}>
+              Both products selected. Compare their nutritional values above.
+            </p>
+            <Link
+              to="/compare"
+              className="filter-button active"
+              style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+            >
+              Open Full Compare Page →
+            </Link>
+          </div>
         )}
       </section>
     </main>

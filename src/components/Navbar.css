@@ -72,3 +72,25 @@
   padding-right: 14px;
   }
 }
+
+.navbar__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  margin-left: 6px;
+  border-radius: 999px;
+  background: #6aa57f;
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+.navbar__link--active .navbar__badge {
+  background: #ffffff;
+  color: #1f4a35;
+}

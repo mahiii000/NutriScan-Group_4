@@ -1,4 +1,5 @@
 import { Link, NavLink } from "react-router-dom";
+import { usePin } from "../context/PinContext";
 import "./Navbar.css";
 
 function linkClass({ isActive }) {
@@ -6,6 +7,8 @@ function linkClass({ isActive }) {
 }
 
 function Navbar() {
+  const { pinnedCodes } = usePin();
+
   return (
     <header className="navbar">
       <div className="navbar__inner">
@@ -19,6 +22,9 @@ function Navbar() {
           </NavLink>
           <NavLink to="/compare" className={linkClass}>
             Compare
+            {pinnedCodes.length > 0 && (
+              <span className="navbar__badge">{pinnedCodes.length}</span>
+            )}
           </NavLink>
         </nav>
       </div>

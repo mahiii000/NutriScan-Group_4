@@ -3,10 +3,11 @@ import Navbar from "./components/Navbar";
 import SearchPage from "./pages/SearchPage";
 import ProductDetail from "./pages/ProductDetail";
 import Compare from "./pages/Compare";
+import { PinProvider } from "./context/PinContext";
 
 function App() {
   return (
-    <>
+    <PinProvider>
       <Navbar />
       <Routes>
         <Route path="/" element={<SearchPage />} />
@@ -22,7 +23,7 @@ function App() {
           }
         />
       </Routes>
-    </>
+    </PinProvider>
   );
 }
 
