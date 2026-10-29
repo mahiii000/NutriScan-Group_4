@@ -1,172 +1,198 @@
+
 import { createContext, useContext, useState, useEffect } from "react";
 import products from "../data/products";
 
 const STORAGE_KEY_PINNED = "nutriscan_pinned_products";
 const STORAGE_KEY_COMPARED = "nutriscan_compared_slots";
-const DEFAULT_PINNED = []; // Oat Bar & Choco Bar matching the sketch
+const STORAGE_KEY_CATALOG = "nutriscan_product_catalog";
 
 const PinContext = createContext(null);
 
+function readSavedArray(key) {
+  try {
+    const saved = localStorage.getItem(key);
+    const parsed = saved ? JSON.parse(saved) : null;
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function loadCatalog() {
+  const savedProducts = readSavedArray(STORAGE_KEY_CATALOG);
+  const catalog = [...products];
+
+  savedProducts.forEach((product) => {
+    if (!product?.code) return;
+
+    const index = catalog.findIndex(
+      (item) => item.code === product.code
+    );
+
+    if (index === -1) {
+      catalog.push(product);
+    } else {
+      catalog[index] = product;
+    }
+  });
+
+  return catalog;
+}
+
+function loadPinnedCodes() {
+  const catalog = loadCatalog();
+  const savedCodes = readSavedArray(STORAGE_KEY_PINNED);
+
+  return [...new Set(savedCodes)]
+    .filter((code) => catalog.some((product) => product.code === code))
+    .slice(0, 2);
+}
+
+function loadComparedCodes() {
+  const pinned = loadPinnedCodes();
+  const saved = readSavedArray(STORAGE_KEY_COMPARED);
+
+  if (saved.length !== 2) return [null, null];
+
+  return saved.map((code) =>
+    code && pinned.includes(code) ? code : null
+  );
+}
+
 export function PinProvider({ children }) {
-  const [pinnedCodes, setPinnedCodes] = useState(() => {
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY_PINNED);
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      if (Array.isArray(parsed)) {
-        return parsed;
-      }
-    }
-  } catch {
-    // Ignore JSON parse errors
-  }
+  const [productCatalog, setProductCatalog] = useState(loadCatalog);
+  const [pinnedCodes, setPinnedCodes] = useState(loadPinnedCodes);
+  const [comparedCodes, setComparedCodes] = useState(loadComparedCodes);
 
-  return [];
-});
-
-  const [comparedCodes, setComparedCodes] = useState(() => {
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY_COMPARED);
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      if (Array.isArray(parsed) && parsed.length === 2) {
-        return parsed;
-      }
-    }
-  } catch {
-    // Ignore JSON parse errors
-  }
-
-  return [null, null];
-});
-
-  // Sync to localStorage
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY_PINNED, JSON.stringify(pinnedCodes));
-    } catch (err) {
-      console.error("Failed to save pinned products to localStorage", err);
-    }
+    localStorage.setItem(
+      STORAGE_KEY_CATALOG,
+      JSON.stringify(productCatalog)
+    );
+  }, [productCatalog]);
+
+  useEffect(() => {
+    localStorage.setItem(
+      STORAGE_KEY_PINNED,
+      JSON.stringify(pinnedCodes)
+    );
   }, [pinnedCodes]);
 
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY_COMPARED, JSON.stringify(comparedCodes));
-    } catch (err) {
-      console.error("Failed to save compared slots to localStorage", err);
-    }
+    localStorage.setItem(
+      STORAGE_KEY_COMPARED,
+      JSON.stringify(comparedCodes)
+    );
   }, [comparedCodes]);
-
-  // Listen to window storage events for cross-tab sync
-  useEffect(() => {
-    function handleStorageChange(event) {
-      if (event.key === STORAGE_KEY_PINNED && event.newValue) {
-        try {
-          const parsed = JSON.parse(event.newValue);
-          if (Array.isArray(parsed)) setPinnedCodes(parsed);
-        } catch {
-          // ignore
-        }
-      }
-      if (event.key === STORAGE_KEY_COMPARED && event.newValue) {
-        try {
-          const parsed = JSON.parse(event.newValue);
-          if (Array.isArray(parsed) && parsed.length === 2) setComparedCodes(parsed);
-        } catch {
-          // ignore
-        }
-      }
-    }
-
-    window.addEventListener("storage", handleStorageChange);
-    return () => window.removeEventListener("storage", handleStorageChange);
-  }, []);
 
   function isPinned(code) {
     return pinnedCodes.includes(code);
   }
 
-  function pinProduct(code) {
-  if (!code) return;
+  function pinProduct(product) {
+    if (!product?.code) return;
 
-  setPinnedCodes((prev) => {
-    // Don't add the same product twice
-    if (prev.includes(code)) return prev;
+    setProductCatalog((prev) => {
+      const index = prev.findIndex(
+        (item) => item.code === product.code
+      );
 
-    // Maximum of 2 pinned products
-    if (prev.length >= 2) return prev;
+      if (index === -1) return [...prev, product];
 
-    return [...prev, code];
-  });
+      return prev.map((item) =>
+        item.code === product.code ? product : item
+      );
+    });
 
-  // Add the product to an empty comparison slot
-  setComparedCodes((prev) => {
-    if (prev.includes(code)) return prev;
+    setPinnedCodes((prev) => {
+      if (prev.includes(product.code) || prev.length >= 2) {
+        return prev;
+      }
 
-    if (!prev[0]) return [code, prev[1]];
-    if (!prev[1]) return [prev[0], code];
+      return [...prev, product.code];
+    });
 
-    return prev;
-  });
-}
-
-  
-
-  function unpinProduct(code) {
-    if (!code) return;
-    const remaining = pinnedCodes.filter((c) => c !== code);
-    setPinnedCodes(remaining);
-
-    // Update compared slots if this product was being compared
     setComparedCodes((prev) => {
-      let [slot0, slot1] = prev;
-      if (slot0 === code) {
-        // Find alternative from remaining that isn't slot1
-        const alt = remaining.find((c) => c !== slot1) || null;
-        slot0 = alt;
-      }
-      if (slot1 === code) {
-        // Find alternative from remaining that isn't slot0
-        const alt = remaining.find((c) => c !== slot0) || null;
-        slot1 = alt;
-      }
-      return [slot0, slot1];
+      if (prev.includes(product.code)) return prev;
+      if (!prev[0]) return [product.code, prev[1]];
+      if (!prev[1]) return [prev[0], product.code];
+      return prev;
     });
   }
 
-  function togglePin(code) {
+  function unpinProduct(code) {
+    if (!code) return;
+
+    setPinnedCodes((prev) =>
+      prev.filter((item) => item !== code)
+    );
+
+    setComparedCodes((prev) =>
+      prev.map((item) => (item === code ? null : item))
+    );
+  }
+
+  function togglePin(product) {
+    const code =
+      typeof product === "string" ? product : product?.code;
+
+    if (!code) return;
+
     if (isPinned(code)) {
       unpinProduct(code);
-    } else {
-      pinProduct(code);
+    } else if (typeof product === "object" && product !== null) {
+      pinProduct(product);
     }
   }
 
-  /**
-   * Swap a single slot (0 or 1) with another product without restarting
-   */
- function swapComparedSlot(slotIndex, newCode) {
-  if (!newCode || (slotIndex !== 0 && slotIndex !== 1)) return;
+  function swapComparedSlot(slotIndex, newCode) {
+    if (slotIndex !== 0 && slotIndex !== 1) return;
 
-  // Only allow products that are already pinned
-  if (!pinnedCodes.includes(newCode)) return;
+    const newProduct = productCatalog.find(
+      (product) => product.code === newCode
+    );
 
-  setComparedCodes((prev) => {
-    const next = [...prev];
-    next[slotIndex] = newCode;
-    return next;
-  });
-}
+    if (!newProduct) return;
 
-  // Map codes to full product objects
+    const oldCode = comparedCodes[slotIndex];
+
+    setPinnedCodes((prev) => {
+      if (prev.includes(newCode)) return prev;
+
+      const updated = [...prev];
+      const oldIndex = updated.indexOf(oldCode);
+
+      if (oldIndex !== -1) {
+        updated[oldIndex] = newCode;
+      } else if (updated.length < 2) {
+        updated.push(newCode);
+      } else {
+        updated[slotIndex] = newCode;
+      }
+
+      return [...new Set(updated)].slice(0, 2);
+    });
+
+    setComparedCodes((prev) => {
+      const updated = [...prev];
+      updated[slotIndex] = newCode;
+      return updated;
+    });
+  }
+
   const pinnedProducts = pinnedCodes
-    .map((code) => products.find((p) => p.code === code))
+    .map((code) =>
+      productCatalog.find((product) => product.code === code)
+    )
     .filter(Boolean);
 
-  const comparedProducts = [
-    comparedCodes[0] ? products.find((p) => p.code === comparedCodes[0]) || null : null,
-    comparedCodes[1] ? products.find((p) => p.code === comparedCodes[1]) || null : null,
-  ];
+  const comparedProducts = [0, 1].map((slot) => {
+    const code = comparedCodes[slot];
+
+    return code
+      ? productCatalog.find((product) => product.code === code) || null
+      : null;
+  });
 
   return (
     <PinContext.Provider
@@ -175,6 +201,8 @@ export function PinProvider({ children }) {
         pinnedProducts,
         comparedCodes,
         comparedProducts,
+        productCatalog,
+        setProductCatalog,
         isPinned,
         pinProduct,
         unpinProduct,
@@ -190,10 +218,10 @@ export function PinProvider({ children }) {
 
 export function usePin() {
   const context = useContext(PinContext);
+
   if (!context) {
     throw new Error("usePin must be used within a PinProvider");
   }
+
   return context;
 }
-
-

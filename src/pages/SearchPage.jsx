@@ -1,23 +1,72 @@
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import products from "../data/products";
 import ProductCard from "../components/ProductCard";
 import { usePin } from "../context/PinContext";
+import { searchProducts } from "../services/productService";
 import "./SearchPage.css";
 
 function SearchPage() {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("All");
-  const { pinnedProducts, isPinned, togglePin, comparedProducts } = usePin();
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const {
+    pinnedProducts,
+    isPinned,
+    togglePin,
+    comparedProducts,
+    setProductCatalog,
+  } = usePin();   
+
+  useEffect(() => {
+    if (!search.trim()) {
+      setProducts([]);
+      setLoading(false);
+      setError(null);
+      return;
+    }
+
+    async function loadProducts() {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const data = await searchProducts(search);
+        setProducts(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadProducts();
+  }, [search]);
+
+  useEffect(() => {
+  setProductCatalog((prev) => {
+    const updated = [...prev];
+
+    products.forEach((product) => {
+      const index = updated.findIndex(
+        (item) => item.code === product.code
+      );
+
+      if (index === -1) {
+        updated.push(product);
+      } else {
+        updated[index] = product;
+      }
+    });
+
+    return updated;
+  });
+  }, [products, setProductCatalog]);
 
   const filteredProducts = products.filter((product) => {
-    const name = product.product_name || "";
-    const categories = product.categories || "";
-
-    const matchesSearch =
-      name.toLowerCase().includes(search.toLowerCase()) ||
-      categories.toLowerCase().includes(search.toLowerCase());
-
     const sugar = product.nutriments?.sugars_100g;
 
     const matchesFilter =
@@ -28,7 +77,7 @@ function SearchPage() {
       (filter === "Gluten-Free" &&
         product.labels_tags?.includes("en:gluten-free"));
 
-    return matchesSearch && matchesFilter;
+    return matchesFilter;
   });
 
   function getNutrient(product, nutrient) {
@@ -81,26 +130,42 @@ function SearchPage() {
       <section className="results-section">
         <div className="results-heading">
           <h2>Products</h2>
-          <p>
-            Showing {filteredProducts.length} of {products.length}
-          </p>
+          <p>Showing {filteredProducts.length} of {products.length}</p>
         </div>
 
-        <div className="product-grid">
-          {filteredProducts.map((product) => (
-            <ProductCard
-              key={product.code}
-              product={product}
-              isPinned={isPinned(product.code)}
-              onTogglePin={togglePin}
-            />
-          ))}
-        </div>
-
-        {filteredProducts.length === 0 && (
+        {loading ? (
+          <p>Loading products...</p>
+        ) : error ? (
+          <div>
+            <p className="empty-message">
+              Could not load products: {error}
+            </p>
+            <button
+              className="filter-button"
+              onClick={() => setSearch((current) => current + " ")}
+            >
+              Try again
+            </button>
+          </div>
+        ) : !search.trim() ? (
           <p className="empty-message">
-            No products found. Try another search.
+            Search for a product to get started.
           </p>
+        ) : filteredProducts.length === 0 ? (
+          <p className="empty-message">
+            No products found. Try another search or filter.
+          </p>
+        ) : (
+          <div className="product-grid">
+            {filteredProducts.map((product) => (
+              <ProductCard
+                key={product.code}
+                product={product}
+                isPinned={isPinned(product.code)}
+                onTogglePin={togglePin}
+              />
+            ))}
+          </div>
         )}
       </section>
 
@@ -145,11 +210,7 @@ function SearchPage() {
                 <div className="tray-product-top">
                   <img
                     className="tray-product-image"
-                    src={
-                      product.image_front_url ||
-                      product.image_url ||
-                      ""
-                    }
+                    src={product.image_front_url || product.image_url || ""}
                     alt={product.product_name || "Product"}
                     onError={(event) => {
                       event.currentTarget.style.visibility = "hidden";
@@ -157,9 +218,7 @@ function SearchPage() {
                   />
 
                   <div className="tray-product-info">
-                    <h3>
-                      {product.product_name || "Unnamed product"}
-                    </h3>
+                    <h3>{product.product_name || "Unnamed product"}</h3>
                     <p className="tray-category">
                       {product.brands || "Brand not available"}
                     </p>
@@ -199,9 +258,7 @@ function SearchPage() {
 
                   <div className="nutrient-item">
                     <span>Fat</span>
-                    <strong>
-                      {getNutrient(product, "fat_100g")}
-                    </strong>
+                    <strong>{getNutrient(product, "fat_100g")}</strong>
                   </div>
 
                   <div className="nutrient-item">
@@ -221,14 +278,28 @@ function SearchPage() {
         </div>
 
         {comparedProducts.filter(Boolean).length === 2 && (
-          <div style={{ marginTop: '18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
+          <div
+            style={{
+              marginTop: "18px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              flexWrap: "wrap",
+              gap: "12px",
+            }}
+          >
             <p className="comparison-ready" style={{ margin: 0 }}>
               Both products selected. Compare their nutritional values above.
             </p>
             <Link
               to="/compare"
               className="filter-button active"
-              style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+              style={{
+                textDecoration: "none",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+              }}
             >
               Open Full Compare Page →
             </Link>

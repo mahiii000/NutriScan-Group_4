@@ -1,0 +1,47 @@
+
+const API_URL = "https://world.openfoodfacts.net/cgi/search.pl";
+
+export async function searchProducts(searchTerm) {
+  const params = new URLSearchParams({
+    search_terms: searchTerm,
+    search_simple: "1",
+    action: "process",
+    json: "1",
+    page_size: "24",
+    fields: [
+      "code",
+      "product_name",
+      "brands",
+      "nutriscore_grade",
+      "nutrition_grades",
+      "nutriscore_data",
+      "image_front_url",
+      "categories",
+      "labels_tags",
+      "allergens_tags",
+      "ingredients_text",
+      "nutriments",
+    ].join(","),
+  });
+
+  const res = await fetch(`${API_URL}?${params}`, {
+    method: "GET",
+    headers: {
+      Authorization: "Basic " + btoa("off:off"),
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error(`Request failed with status ${res.status}`);
+  }
+
+  const data = await res.json();
+
+  if (!Array.isArray(data.products)) {
+    throw new Error("The API returned an unexpected response.");
+  }
+
+  return data.products.filter(
+    (product) => product.code && product.product_name
+  );
+}

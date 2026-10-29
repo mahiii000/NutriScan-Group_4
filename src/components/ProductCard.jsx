@@ -29,8 +29,9 @@ function ProductCard({ product, isPinned, onTogglePin }) {
         </span>
 
         <button
+          type="button"
           className={`pin-button ${isPinned ? "pinned" : ""}`}
-          onClick={() => onTogglePin(product.code)}
+          onClick={() => onTogglePin(product)}
           aria-label={isPinned ? "Unpin product" : "Pin product"}
           title={isPinned ? "Unpin product" : "Pin product"}
         >
