@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
@@ -12,6 +11,7 @@ function SearchPage() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [retryCount, setRetryCount] = useState(0); // used by the "Try again" button
 
   const {
     pinnedProducts,
@@ -19,8 +19,10 @@ function SearchPage() {
     togglePin,
     comparedProducts,
     setProductCatalog,
-  } = usePin();   
+  } = usePin();
 
+  // CHANGED: ignore flag stops old/slow responses overwriting newer ones,
+  // clear error message, and retryCount in the dependency array
   useEffect(() => {
     if (!search.trim()) {
       setProducts([]);
@@ -29,41 +31,51 @@ function SearchPage() {
       return;
     }
 
+    let ignore = false;
+
     async function loadProducts() {
       setLoading(true);
       setError(null);
 
       try {
         const data = await searchProducts(search);
-        setProducts(data);
+        if (!ignore) setProducts(data);
       } catch (err) {
-        setError(err.message);
+        if (!ignore) {
+          setError(
+            "Couldn't load products. Check your connection and try again."
+          );
+        }
       } finally {
-        setLoading(false);
+        if (!ignore) setLoading(false);
       }
     }
 
     loadProducts();
-  }, [search]);
+
+    return () => {
+      ignore = true;
+    };
+  }, [search, retryCount]);
 
   useEffect(() => {
-  setProductCatalog((prev) => {
-    const updated = [...prev];
+    setProductCatalog((prev) => {
+      const updated = [...prev];
 
-    products.forEach((product) => {
-      const index = updated.findIndex(
-        (item) => item.code === product.code
-      );
+      products.forEach((product) => {
+        const index = updated.findIndex(
+          (item) => item.code === product.code
+        );
 
-      if (index === -1) {
-        updated.push(product);
-      } else {
-        updated[index] = product;
-      }
+        if (index === -1) {
+          updated.push(product);
+        } else {
+          updated[index] = product;
+        }
+      });
+
+      return updated;
     });
-
-    return updated;
-  });
   }, [products, setProductCatalog]);
 
   const filteredProducts = products.filter((product) => {
@@ -130,19 +142,26 @@ function SearchPage() {
       <section className="results-section">
         <div className="results-heading">
           <h2>Products</h2>
-          <p>Showing {filteredProducts.length} of {products.length}</p>
+          {/* CHANGED: only show the count when not loading and no error */}
+          {!loading && !error && (
+            <p>
+              Showing {filteredProducts.length} of {products.length}
+            </p>
+          )}
         </div>
 
+        {/* CHANGED: loading + error blocks */}
         {loading ? (
-          <p>Loading products...</p>
+          <div className="loading-state" role="status">
+            <div className="spinner" />
+            <p>Loading products...</p>
+          </div>
         ) : error ? (
-          <div>
-            <p className="empty-message">
-              Could not load products: {error}
-            </p>
+          <div className="error-state" role="alert">
+            <p className="empty-message">{error}</p>
             <button
               className="filter-button"
-              onClick={() => setSearch((current) => current + " ")}
+              onClick={() => setRetryCount((c) => c + 1)}
             >
               Try again
             </button>

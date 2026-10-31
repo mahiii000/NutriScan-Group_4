@@ -1,4 +1,3 @@
-
 const API_URL = "https://world.openfoodfacts.net/cgi/search.pl";
 
 export async function searchProducts(searchTerm) {
@@ -24,12 +23,22 @@ export async function searchProducts(searchTerm) {
     ].join(","),
   });
 
-  const res = await fetch(`${API_URL}?${params}`, {
-    method: "GET",
-    headers: {
-      Authorization: "Basic " + btoa("off:off"),
-    },
-  });
+  // NEW: abort the request after 10 seconds so the spinner never hangs forever
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+  let res;
+  try {
+    res = await fetch(`${API_URL}?${params}`, {
+      method: "GET",
+      headers: {
+        Authorization: "Basic " + btoa("off:off"),
+      },
+      signal: controller.signal,
+    });
+  } finally {
+    clearTimeout(timeoutId);
+  }
 
   if (!res.ok) {
     throw new Error(`Request failed with status ${res.status}`);
