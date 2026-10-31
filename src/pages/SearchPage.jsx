@@ -6,6 +6,15 @@ import { usePin } from "../context/PinContext";
 import { searchProducts } from "../services/productService";
 import "./SearchPage.css";
 
+const FILTERS = [
+  "All",
+  "Snacks",
+  "Gluten-Free",
+  "Vegan",
+  "Organic",
+  "Beverages",
+];
+
 function SearchPage() {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("All");
@@ -29,22 +38,34 @@ function SearchPage() {
       return;
     }
 
+    const controller = new AbortController();
+
     async function loadProducts() {
       setLoading(true);
       setError(null);
 
       try {
-        const data = await searchProducts(search);
-        setProducts(data);
+        const data = await searchProducts(search.trim(), filter, {
+          signal: controller.signal,
+        });
+
+        if (!controller.signal.aborted) {
+          setProducts(data);
+        }
       } catch (err) {
-        setError(err.message);
+        if (!controller.signal.aborted) {
+          setError(err.message);
+        }
       } finally {
-        setLoading(false);
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
       }
     }
 
     loadProducts();
-  }, [search]);
+    return () => controller.abort();
+  }, [search, filter]);
 
   useEffect(() => {
   setProductCatalog((prev) => {
@@ -66,19 +87,7 @@ function SearchPage() {
   });
   }, [products, setProductCatalog]);
 
-  const filteredProducts = products.filter((product) => {
-    const sugar = product.nutriments?.sugars_100g;
-
-    const matchesFilter =
-      filter === "All" ||
-      (filter === "Low Sugar" &&
-        typeof sugar === "number" &&
-        sugar <= 5) ||
-      (filter === "Gluten-Free" &&
-        product.labels_tags?.includes("en:gluten-free"));
-
-    return matchesFilter;
-  });
+  const filteredProducts = products;
 
   function getNutrient(product, nutrient) {
     const value = product.nutriments?.[nutrient];
@@ -113,7 +122,7 @@ function SearchPage() {
         />
 
         <div className="filter-list">
-          {["All", "Low Sugar", "Gluten-Free"].map((category) => (
+          {FILTERS.map((category) => (
             <button
               key={category}
               className={`filter-button ${
