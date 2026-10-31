@@ -1,4 +1,3 @@
-
 const API_URL = "https://world.openfoodfacts.net/cgi/search.pl";
 
 function applyApiFilters(params, filter) {
@@ -62,7 +61,6 @@ export async function searchProducts(searchTerm, filter = "All", { signal } = {}
 
   const res = await fetch(`${API_URL}?${params}`, {
     method: "GET",
-    signal,
     headers: {
       Authorization: "Basic " + btoa("off:off"),
     },
