@@ -1,37 +1,23 @@
 const API_URL = "https://world.openfoodfacts.net/cgi/search.pl";
 
+const FILTER_TAGS = {
+  Snacks: ["categories", "en:snacks"],
+  "Gluten-Free": ["labels", "en:gluten-free"],
+  Vegan: ["labels", "en:vegan"],
+  "Dairy-Free": ["labels", "en:dairy-free"],
+  Organic: ["labels", "en:organic"],
+  Beverages: ["categories", "en:beverages"],
+  Desserts: ["categories", "en:desserts"],
+};
+
 function applyApiFilters(params, filter) {
-  if (filter === "Snacks") {
-    params.set("tagtype_0", "categories");
-    params.set("tag_contains_0", "contains");
-    params.set("tag_0", "en:snacks");
-  }
+  const filterTag = FILTER_TAGS[filter];
 
-  if (filter === "Gluten-Free") {
-    params.set("tagtype_0", "labels");
+  if (filterTag) {
+    params.set("tagtype_0", filterTag[0]);
     params.set("tag_contains_0", "contains");
-    params.set("tag_0", "en:gluten-free");
+    params.set("tag_0", filterTag[1]);
   }
-
-  if (filter === "Vegan") {
-    params.set("tagtype_0", "labels");
-    params.set("tag_contains_0", "contains");
-    params.set("tag_0", "en:vegan");
-  }
-
-  if (filter === "Organic") {
-    params.set("tagtype_0", "labels");
-    params.set("tag_contains_0", "contains");
-    params.set("tag_0", "en:organic");
-  }
-
-  if (filter === "Beverages") {
-    params.set("tagtype_0", "categories");
-    params.set("tag_contains_0", "contains");
-    params.set("tag_0", "en:beverages");
-  }
-
-  return params;
 }
 
 export async function searchProducts(searchTerm, filter = "All", { signal } = {}) {
@@ -61,6 +47,7 @@ export async function searchProducts(searchTerm, filter = "All", { signal } = {}
 
   const res = await fetch(`${API_URL}?${params}`, {
     method: "GET",
+    signal,
     headers: {
       Authorization: "Basic " + btoa("off:off"),
     },

@@ -10,8 +10,10 @@ const FILTERS = [
   "Snacks",
   "Gluten-Free",
   "Vegan",
+  "Dairy-Free",
   "Organic",
   "Beverages",
+  "Desserts",
 ];
 
 function SearchPage() {
@@ -40,22 +42,34 @@ function SearchPage() {
       return;
     }
 
+    const controller = new AbortController();
+
     async function loadProducts() {
       setLoading(true);
       setError(null);
 
       try {
-        const data = await searchProducts(search);
-        setProducts(data);
+        const data = await searchProducts(search.trim(), filter, {
+          signal: controller.signal,
+        });
+
+        if (!controller.signal.aborted) {
+          setProducts(data);
+        }
       } catch (err) {
-        setError(err.message);
+        if (!controller.signal.aborted) {
+          setError(err.message);
+        }
       } finally {
-        setLoading(false);
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
       }
     }
 
     loadProducts();
-  }, [search]);
+    return () => controller.abort();
+  }, [search, filter, retryCount]);
 
   useEffect(() => {
     setProductCatalog((prev) => {
