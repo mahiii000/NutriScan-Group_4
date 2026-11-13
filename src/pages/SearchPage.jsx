@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
 import { usePin } from "../context/PinContext";
 import { searchProducts } from "../services/productService";
+import { usePreferences } from "../context/PreferencesContext";
 import "./SearchPage.css";
 
 const FILTERS = [
@@ -31,6 +32,16 @@ function SearchPage() {
     comparedProducts,
     setProductCatalog,
   } = usePin();
+  const { preferences } = usePreferences();
+
+  const goalNames = {
+  "low-sugar": "Low Sugar",
+  "gluten-free": "Gluten-Free",
+  balanced: "Balanced Nutrition",
+  };
+
+  const hasPreferences =
+    preferences.goal || preferences.allergens.length > 0;
 
   // CHANGED: ignore flag stops old/slow responses overwriting newer ones,
   // clear error message, and retryCount in the dependency array
@@ -138,6 +149,24 @@ function SearchPage() {
             </button>
           ))}
         </div>
+        {hasPreferences && (
+        <div className="active-preferences">
+          <div>
+            <strong>Active Preferences</strong>
+            <p>
+              {preferences.goal
+                ? goalNames[preferences.goal]
+                : "No dietary goal selected"}
+              {preferences.allergens.length > 0 &&
+                ` • Avoiding: ${preferences.allergens.join(", ")}`}
+            </p>
+          </div>
+
+          <Link to="/preferences" className="edit-preferences">
+            Edit preferences
+          </Link>
+        </div>
+      )}
       </section>
 
       <section className="results-section">
@@ -179,10 +208,11 @@ function SearchPage() {
           <div className="product-grid">
             {filteredProducts.map((product) => (
               <ProductCard
-                key={product.code}
-                product={product}
-                isPinned={isPinned(product.code)}
-                onTogglePin={togglePin}
+              key={product.code}
+              product={product}
+              isPinned={isPinned(product.code)}
+              onTogglePin={togglePin}
+              preferences={preferences}
               />
             ))}
           </div>

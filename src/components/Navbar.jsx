@@ -20,11 +20,18 @@ function Navbar() {
           <NavLink to="/" end className={linkClass}>
             Products
           </NavLink>
+
           <NavLink to="/compare" className={linkClass}>
             Compare
             {pinnedCodes.length > 0 && (
-              <span className="navbar__badge">{pinnedCodes.length}</span>
+              <span className="navbar__badge">
+                {pinnedCodes.length}
+              </span>
             )}
+          </NavLink>
+
+          <NavLink to="/preferences" className={linkClass}>
+            Preferences
           </NavLink>
         </nav>
       </div>

@@ -1,0 +1,115 @@
+
+.preferences-page {
+  min-height: calc(100vh - 70px);
+  padding: 48px 24px;
+  background: #f7f9f7;
+}
+
+.preferences-container {
+  max-width: 750px;
+  margin: 0 auto;
+}
+
+.preferences-header {
+  margin-bottom: 28px;
+}
+
+.preferences-header h1 {
+  margin-bottom: 8px;
+  color: #1f3328;
+  font-size: 28px;
+}
+
+.preferences-header p,
+.preferences-section p {
+  color: #6b756e;
+  font-size: 14px;
+}
+
+.preferences-card {
+  padding: 28px;
+  background: white;
+  border: 1px solid #e3e9e4;
+  border-radius: 12px;
+}
+
+.preferences-section {
+  margin-bottom: 28px;
+}
+
+.preferences-section h2 {
+  margin-bottom: 6px;
+  color: #263a2d;
+  font-size: 18px;
+}
+
+.preferences-options {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.preferences-options label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid #e3e9e4;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #34443a;
+  font-size: 14px;
+}
+
+.preferences-options label:hover {
+  background: #f5faf5;
+}
+
+.preferences-options input {
+  accent-color: #398653;
+  cursor: pointer;
+}
+
+.preferences-save {
+  width: 100%;
+  padding: 13px;
+  border: none;
+  border-radius: 8px;
+  background: #398653;
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.preferences-save:hover {
+  background: #2e7045;
+}
+
+.preferences-message {
+  margin-bottom: 16px;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.preferences-error {
+  background: #fff0f0;
+  color: #b42318;
+}
+
+.preferences-success {
+  background: #edf8ef;
+  color: #26733d;
+}
+
+@media (max-width: 600px) {
+  .preferences-options {
+    grid-template-columns: 1fr;
+  }
+
+  .preferences-card {
+    padding: 20px;
+  }
+}
