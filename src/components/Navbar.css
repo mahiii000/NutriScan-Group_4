@@ -94,3 +94,23 @@
   background: #ffffff;
   color: #1f4a35;
 }
+
+.navbar__user {
+  color: #6b7a72;
+  font-size: 0.95rem;
+}
+
+.navbar__logout {
+  background: none;
+  border: 1px solid #1f3d2e;
+  color: #1f3d2e;
+  border-radius: 999px;
+  padding: 0.4rem 0.9rem;
+  font: inherit;
+  cursor: pointer;
+}
+
+.navbar__logout:hover {
+  background: #1f3d2e;
+  color: #fff;
+}

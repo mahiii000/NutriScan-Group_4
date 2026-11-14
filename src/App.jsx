@@ -7,6 +7,7 @@ import Compare from "./pages/Compare";
 import Preferences from "./pages/Preferences";
 import { PinProvider } from "./context/PinContext";
 import { PreferencesProvider } from "./context/PreferencesContext";
+import Login from "./pages/Login";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/compare" element={<Compare />} />
           <Route path="/preferences" element={<Preferences />} />
+          <Route path="/login" element={<Login />} />
 
           <Route
             path="*"
