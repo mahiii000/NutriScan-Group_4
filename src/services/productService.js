@@ -1,4 +1,4 @@
-const API_URL = "https://world.openfoodfacts.net/cgi/search.pl";
+const API_URL = "https://world.openfoodfacts.org/cgi/search.pl";
 
 const FILTER_TAGS = {
   Snacks: ["categories", "en:snacks"],

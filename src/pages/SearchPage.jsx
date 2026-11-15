@@ -69,7 +69,11 @@ function SearchPage() {
         }
       } catch (err) {
         if (!controller.signal.aborted) {
-          setError(err.message);
+           console.error("Product search failed:", err);
+
+            setError(
+              "We couldn't load products right now. Please check your internet connection and try again."
+      );
         }
       } finally {
         if (!controller.signal.aborted) {
