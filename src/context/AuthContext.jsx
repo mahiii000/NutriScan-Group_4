@@ -12,7 +12,8 @@ export function AuthProvider({ children }) {
   });
 
   const login = (name, email) => {
-    const u = { name, email };
+    const normalizedEmail = String(email || "").trim().toLowerCase();
+    const u = { name, email: normalizedEmail };
     setUser(u);
     localStorage.setItem("nutriscan_user", JSON.stringify(u));
   };

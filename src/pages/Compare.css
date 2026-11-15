@@ -852,18 +852,50 @@
     padding: 1.25rem 0.75rem 3rem;
   }
 
+  .compare-topbar {
+    align-items: flex-start;
+  }
+
+  .compare-eyebrow {
+    width: 100%;
+  }
+
+  .highlight-pill {
+    width: fit-content;
+    max-width: 100%;
+  }
+
   .compare-title {
     font-size: 1.5rem;
   }
 
-  .metric-header-cell,
+  .side-by-side-table {
+    table-layout: fixed;
+    width: 100%;
+  }
+
+  .metric-header-cell {
+    width: 28%;
+    min-width: 96px;
+    padding: 0.85rem 0.5rem;
+  }
+
   .product-col-header {
+    width: 36%;
+    min-width: 0;
     padding: 0.85rem 0.5rem;
   }
 
   .product-header-img-wrap {
     width: 58px;
     height: 58px;
+  }
+
+  .product-header-name,
+  .row-metric-label,
+  .cell-text {
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
 
   .product-header-name {
@@ -874,6 +906,10 @@
   .row-metric-value {
     padding: 0.65rem 0.5rem;
     font-size: 0.82rem;
+  }
+
+  .cell-inner {
+    align-items: center;
   }
 
   .pinned-item-card {
