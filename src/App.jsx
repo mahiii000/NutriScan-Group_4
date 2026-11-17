@@ -1,4 +1,4 @@
-
+import ErrorBoundary from "./components/ErrorBoundary";
 import { Routes, Route, Link } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import SearchPage from "./pages/SearchPage";
@@ -16,7 +16,14 @@ function App() {
         <Navbar />
 
         <Routes>
-          <Route path="/" element={<SearchPage />} />
+          <Route
+            path="/"
+            element={
+              <ErrorBoundary>
+                <SearchPage />
+              </ErrorBoundary>
+            }
+          />
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/compare" element={<Compare />} />
           <Route path="/preferences" element={<Preferences />} />
