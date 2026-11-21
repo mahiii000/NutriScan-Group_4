@@ -2,7 +2,9 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { Routes, Route, Link } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import SearchPage from "./pages/SearchPage";
-import ProductDetail from "./pages/ProductDetail";
+import { lazy, Suspense } from "react";
+
+const ProductDetail = lazy(() => import("./pages/ProductDetail"));
 import Compare from "./pages/Compare";
 import Preferences from "./pages/Preferences";
 import { PinProvider } from "./context/PinContext";
@@ -24,7 +26,14 @@ function App() {
               </ErrorBoundary>
             }
           />
-          <Route path="/product/:id" element={<ProductDetail />} />
+          <Route
+            path="/product/:id"
+            element={
+              <Suspense fallback={<p>Loading product...</p>}>
+                <ProductDetail />
+              </Suspense>
+            }
+          />
           <Route path="/compare" element={<Compare />} />
           <Route path="/preferences" element={<Preferences />} />
           <Route path="/login" element={<Login />} />

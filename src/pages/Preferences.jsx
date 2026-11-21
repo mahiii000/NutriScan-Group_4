@@ -20,6 +20,12 @@ function Preferences() {
     "Wheat",
   ];
 
+  function handleGoalChange(selectedGoal) {
+    setGoal(goal === selectedGoal ? "" : selectedGoal);
+    setError("");
+    setSuccess("");
+  }
+
   function handleAllergenChange(allergen) {
     if (allergens.includes(allergen)) {
       setAllergens(allergens.filter((item) => item !== allergen));
@@ -72,11 +78,10 @@ function Preferences() {
                   name="goal"
                   value="low-sugar"
                   checked={goal === "low-sugar"}
-                  onChange={(event) => {
-                    setGoal(event.target.value);
-                    setError("");
-                    setSuccess("");
+                  onClick={() => {
+                    if (goal === "low-sugar") handleGoalChange("low-sugar");
                   }}
+                  onChange={() => handleGoalChange("low-sugar")}
                 />
                 Low Sugar
               </label>
@@ -87,11 +92,10 @@ function Preferences() {
                   name="goal"
                   value="gluten-free"
                   checked={goal === "gluten-free"}
-                  onChange={(event) => {
-                    setGoal(event.target.value);
-                    setError("");
-                    setSuccess("");
+                  onClick={() => {
+                    if (goal === "gluten-free") handleGoalChange("gluten-free");
                   }}
+                  onChange={() => handleGoalChange("gluten-free")}
                 />
                 Gluten-Free
               </label>
@@ -102,15 +106,20 @@ function Preferences() {
                   name="goal"
                   value="balanced"
                   checked={goal === "balanced"}
-                  onChange={(event) => {
-                    setGoal(event.target.value);
-                    setError("");
-                    setSuccess("");
+                  onClick={() => {
+                    if (goal === "balanced") handleGoalChange("balanced");
                   }}
+                  onChange={() => handleGoalChange("balanced")}
                 />
                 Balanced Nutrition
               </label>
             </div>
+
+            {error && (
+              <p className="preferences-message preferences-error">
+                {error}
+              </p>
+            )}
           </section>
 
           <section className="preferences-section">
@@ -130,12 +139,6 @@ function Preferences() {
               ))}
             </div>
           </section>
-
-          {error && (
-            <p className="preferences-message preferences-error">
-              {error}
-            </p>
-          )}
 
           {success && (
             <p className="preferences-message preferences-success">

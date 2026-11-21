@@ -100,7 +100,13 @@ function getGoalStatus() {
       <Link to={`/product/${product.code}`} className="product-card__link">
         <div className="product-image">
           {image ? (
-            <img src={image} alt={name} />
+            <img
+              src={image}
+              alt={name}
+              width="200"
+              height="200"
+              loading="lazy"
+            />
           ) : (
             <span>No image available</span>
           )}
