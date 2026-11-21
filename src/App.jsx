@@ -41,9 +41,33 @@ function App() {
           <Route
             path="*"
             element={
-              <main>
-                <h1>Page not found</h1>
-                <Link to="/">Back to home</Link>
+              <main
+                style={{
+                  maxWidth: "1100px",
+                  margin: "0 auto",
+                  padding: "3rem 1.5rem",
+                  textAlign: "center",
+                }}
+              >
+                <h1 style={{ color: "#1f3d2b", marginBottom: "0.5rem" }}>
+                  Page not found
+                </h1>
+                <p style={{ color: "#5b6b60", marginBottom: "1.5rem" }}>
+                  The page you're looking for doesn't exist.
+                </p>
+                <Link
+                  to="/"
+                  style={{
+                    display: "inline-block",
+                    padding: "0.6rem 1.2rem",
+                    border: "1px solid #1f3d2b",
+                    borderRadius: "999px",
+                    color: "#1f3d2b",
+                    textDecoration: "none",
+                  }}
+                >
+                  Back to home
+                </Link>
               </main>
             }
           />

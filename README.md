@@ -11,12 +11,13 @@ The application retrieves food product information from the Open Food Facts API 
 
 
 - Product Search: Search for food products by name using the Open Food Facts API.
-- Product Filtering Filter products by categories and dietary labels, including snacks, beverages, vegan, gluten-free, dairy-free, and organic options.
+- Product Filtering: Filter products by categories and dietary labels, including snacks, beverages, vegan, gluten-free, dairy-free, and organic options.
 - Product Details: View detailed product information, including ingredients, nutritional values, Nutri-Score, and allergen information.
 - Dietary Preferences: Select a dietary goal and specify allergens to avoid. The application uses these preferences to display relevant indicators on product cards.
 - Product Pinning: Pin products to keep track of items of interest.
 - Product Comparison: Compare selected products and their nutritional information.
 - Local Storage: Save dietary preferences, pinned products, and comparison selections in the browser so they remain available between visits.
+- Login: A simple client-side login that personalizes the app (e.g., greeting the user by name). The session is stored in the browser's localStorage.
 
 
 ## Technologies Used
@@ -124,9 +125,9 @@ The application stores:
 - Pinned product selections.
 - Selected products for comparison.
 - Product information needed across application pages.
+- Login session (username).
 
-
-This information is stored locally in the user's browser. The application does not currently use user accounts or a backend database.
+NutriScan has no backend or database. The login is handled entirely on the client and stored in localStorage, so it is not real authentication: no passwords are verified and nothing is sent to a server. Data stays in the user's browser and is not shared across devices.
 
 
 ## Project Structure
@@ -159,7 +160,7 @@ NutriScan-Group_4/
 │   │   ├── SearchPage.jsx
 │   │   ├── ProductDetail.jsx
 │   │   ├── Compare.jsx
-│   │   └── Preferences.jsx
+│   │   ├── Preferences.jsx
 │   │   └── Login.jsx
 │   │
 │   ├── services/
